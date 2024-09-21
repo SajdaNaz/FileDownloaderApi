@@ -12,12 +12,16 @@ namespace FileDownloaderApi.Models
     {
 
         private readonly IFileService _fileService;
+        private readonly IFileModel _fileModel;
         //private readonly string resourcesDirectory = Directory.GetCurrentDirectory() + "\\Resources\\";
 
-        public FileDownloader(IFileService fileService)
+        public FileDownloader(IFileService fileService, IFileModel fileModel)
         {
-                _fileService = fileService;
+            _fileService = fileService;
+            _fileModel = fileModel;
         }
+
+
 
 
         public async Task<FileModel?> Run(string? filename)
@@ -26,9 +30,7 @@ namespace FileDownloaderApi.Models
             if (string.IsNullOrEmpty(filename))
                 filename= "dark_blue_gry.JPG";
 
-            //var filemodel=GetFileModel(filename);
-
-            FileModel filemodel = new(filename, resourcesDirectory);
+            var filemodel = _fileModel.NewFrom(filename, resourcesDirectory);
 
             var filestream = await _fileService.GetFileAsStream(filemodel);
 
@@ -41,11 +43,5 @@ namespace FileDownloaderApi.Models
             return null;
         }
 
-        //private FileModel GetFileModel(string filename)
-        //{
-        //    FileModel filemodel = new(filename,resourcesDirectory);
-        //    return filemodel;
-
-        //}
     }
 }

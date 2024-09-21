@@ -14,38 +14,74 @@ using System.Runtime.Versioning;
 namespace FileDownloaderApi.Tests.Models
 {
     [TestFixture()]
-    public class FileDownloaderTest
+    internal class FileDownloaderTest
     {
 
         [Test]
-        public async Task Run_WhenExecuted_ReturnsNull()
+        public async Task Run_WhenExecuted_ReturnsNotNull()
         {
+            //arrange
             var fname = "textfile.txt";
+            
+            var mockedFileModel = new FileModel()
+            {
+                Filename = fname,
+                Directory = "",
+                FileMimeType = "plain/text"
+            };
 
             var testStream = new MemoryStream(Encoding.UTF8.GetBytes("whatever"));
-
-            //var fileModel_mocked = new Mock<FileModel>("filename.txt","resourcesDirectory");
-            var fileModel_mocked = new Mock<FileModel>(MockBehavior.Strict, "textfile.txt", "resources","img/jpg" );
-            fileModel_mocked.Setup(x => x.)
-            var fileModel = fileModel_mocked.Object;
 
             var fileservice = new Mock<IFileService>();
             fileservice.Setup(x => x.GetFileAsStream(It.IsAny<FileModel>())).ReturnsAsync(testStream);
 
-            FileDownloader fileDownloader = new FileDownloader(fileservice.Object);
+            var filemodel=new Mock<IFileModel>();
+            filemodel.Setup(x => x.NewFrom(It.IsAny<string>(),It.IsAny<string>())).Returns(mockedFileModel);
 
-            var actualResult=fileDownloader.Run(fname);
+            FileDownloader fileDownloader = new FileDownloader(fileservice.Object, filemodel.Object);
 
-            Assert.That(actualResult.Result.Filename, Is.Not.Null);
 
-            //Act
-            //using (var test_Stream = new MemoryStream(Encoding.UTF8.GetBytes("whatever")))
-            //{
-            //    var result = imp.Import(test_Stream);
+            //act
+            var actualResult = fileDownloader.Run(fname);
 
-            //    // Assert    
-            //    Assert.IsTrue(result);
-            //}
+
+            //assert
+            Assert.That(actualResult.Result, Is.Not.Null);
+            Assert.That(actualResult.Result.Filestream, Is.Not.Null);
+
+
+        }
+
+        [Test]
+        public async Task Run_WhenExecuted_ReturnsNull()
+        {
+            //arrange
+            var fname = "textfile.txt";
+
+            var mockedFileModel = new FileModel()
+            {
+                Filename = fname,
+                Directory = "",
+                FileMimeType = "plain/text"
+            };
+
+            var testStream = new MemoryStream();
+
+            var fileservice = new Mock<IFileService>();
+            fileservice.Setup(x => x.GetFileAsStream(It.IsAny<FileModel>())).ReturnsAsync(testStream);
+
+            var filemodel = new Mock<IFileModel>();
+            filemodel.Setup(x => x.NewFrom(It.IsAny<string>(), It.IsAny<string>())).Returns(mockedFileModel);
+
+            FileDownloader fileDownloader = new FileDownloader(fileservice.Object, filemodel.Object);
+
+
+            //act
+            var actualResult = fileDownloader.Run(fname);
+
+
+            //assert
+            Assert.That(actualResult.Result, Is.Null);
 
         }
 

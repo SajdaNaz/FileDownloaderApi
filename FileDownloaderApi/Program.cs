@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFileDownloader, FileDownloader>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IFileModel, FileModel>();
 
 
 var app = builder.Build();
