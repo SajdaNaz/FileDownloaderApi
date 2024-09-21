@@ -67,9 +67,6 @@ namespace FileDownloaderApi.Tests.Controllers
             Assert.IsNotNull(actualResult);
             Assert.IsInstanceOf<NotFoundResult>(actualResult);  //method 1 of checking type
             Assert.IsTrue(actualResult is NotFoundResult);      //method 2 of checking type (both achieve same objective)
-            
-
-
 
         }
 

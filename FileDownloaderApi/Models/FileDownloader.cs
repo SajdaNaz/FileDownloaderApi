@@ -13,8 +13,8 @@ namespace FileDownloaderApi.Models
 
         private readonly IFileService _fileService;
         private readonly IFileModel _fileModel;
-        //private readonly string resourcesDirectory = Directory.GetCurrentDirectory() + "\\Resources\\";
 
+        
         public FileDownloader(IFileService fileService, IFileModel fileModel)
         {
             _fileService = fileService;
@@ -22,11 +22,10 @@ namespace FileDownloaderApi.Models
         }
 
 
-
-
         public async Task<FileModel?> Run(string? filename)
         {
             var resourcesDirectory = Directory.GetCurrentDirectory() + "\\Resources\\";
+
             if (string.IsNullOrEmpty(filename))
                 filename= "dark_blue_gry.JPG";
 

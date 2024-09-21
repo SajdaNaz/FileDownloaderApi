@@ -14,7 +14,7 @@ namespace FileDownloaderApi.Models
         public string Filename { get; set; } = string.Empty;
         public string Directory { get; set; } = string.Empty;
         public string FileMimeType { get; set; } = string.Empty;
-        public Stream Filestream { get; set; } 
+        public Stream? Filestream { get; set; } 
 
 
         public FileModel NewFrom(string filename, string directory)
