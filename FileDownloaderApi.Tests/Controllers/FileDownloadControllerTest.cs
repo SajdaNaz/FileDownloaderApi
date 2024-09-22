@@ -14,35 +14,37 @@ namespace FileDownloaderApi.Tests.Controllers
         [Test]
         public void GetFile_ReturnsFile()
         {
-            //arrange
-            var fname = "textfile.txt";
-            var testStream = new MemoryStream(Encoding.UTF8.GetBytes("whatever"));
-
-
-            var mockedFileModel = new FileModel()
+            using (var testStream = new MemoryStream(Encoding.UTF8.GetBytes("whatever")))
             {
-                Filename = fname,
-                Directory = "",
-                FileMimeType = "plain/text",
-                Filestream = testStream
-                
-            };
+                //arrange
+                var fname = "textfile.txt";
 
-            var filedownloader = new Mock<IFileDownloader>();
-            filedownloader.Setup(x => x.Run(null)).ReturnsAsync(mockedFileModel);
+                var mockedFileModel = new FileModel()
+                {
+                    Filename = fname,
+                    Directory = "",
+                    FileMimeType = "plain/text",
+                    Filestream = testStream
 
-            FileDownloadController controller = new FileDownloadController(filedownloader.Object);
+                };
 
-            //act
-            var actualResult=controller.GetFile();
+                var filedownloader = new Mock<IFileDownloader>();
+                filedownloader.Setup(x => x.Run(null)).ReturnsAsync(mockedFileModel);
+
+                FileDownloadController controller = new FileDownloadController(filedownloader.Object);
+
+                //act
+                var actualResult = controller.GetFile();
 
 
-            //assert
-            Assert.That(actualResult.Result, Is.Not.Null);
-            Assert.IsInstanceOf<FileStreamResult>(actualResult.Result);
+                //assert
+                Assert.That(actualResult.Result, Is.Not.Null);
+                Assert.IsInstanceOf<FileStreamResult>(actualResult.Result);
 
+            }
 
         }
+
 
         [Test]
         public async Task GetFile_ReturnsNull()
